@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Mario's Latent Dream explores DreamerV3 world-model reinforcement learning through gameplay and decoded latent futures."
+    />
+    <title>Mario's Latent Dream</title>
+    <link rel="stylesheet" href="styles.css?v=4" />
+  </head>
+  <body>
+    <main>
+      <section class="reel" id="reel" aria-labelledby="page-title">
+        <div class="stage">
+          <canvas id="dream-canvas" aria-hidden="true"></canvas>
+          <video
+            id="paired-source"
+            class="source-video"
+            src="media/paired_episode_seed151.mp4"
+            muted
+            playsinline
+            preload="auto"
+            loop
+          ></video>
+          <div class="scanlines" aria-hidden="true"></div>
+
+          <header class="topbar">
+            <a class="wordmark" href="#reel" aria-label="Mario's Latent Dream home">
+              <span class="wordmark-mark">D3</span>
+              <span>Mario / Latent Dream</span>
+            </a>
+            <div class="run-state">
+              <i aria-hidden="true"></i>
+              <div>
+                <strong>Frozen checkpoint</strong>
+                <span>August 11, 2026</span>
+                <span>98,420 training steps</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="hero-copy">
+            <p class="kicker">DreamerV3 from pixels</p>
+            <h1 id="page-title">Mario's<br />latent dream.</h1>
+            <p class="hero-note">
+              A world-model agent learns the level, rehearses behavior in latent futures,
+              and acts without a map or scripted obstacle logic.
+            </p>
+          </div>
+
+          <aside class="dream-key" aria-label="World model view details">
+            <span id="dream-phase">Open-loop prior prediction</span>
+            <strong>15-step latent forecast</strong>
+            <small id="dream-window-label">Step 01 / 15 &middot; synchronized &middot; 0.75&times;</small>
+          </aside>
+
+          <aside class="gameplay-panel" id="gameplay-panel" aria-label="Real gameplay">
+            <div class="gameplay-meta" aria-hidden="true">
+              <span><i></i> Reality</span>
+              <strong>Seed 151 &middot; level complete</strong>
+            </div>
+            <div class="gameplay-frame">
+              <canvas
+                id="gameplay-canvas"
+                role="img"
+                aria-label="Actual emulator outcome aligned to the latent forecast"
+              ></canvas>
+            </div>
+          </aside>
+
+          <a class="scroll-cue" href="#story">
+            <span>Enter the model</span>
+            <i aria-hidden="true"></i>
+          </a>
+        </div>
+      </section>
+
+      <section class="story" id="story" aria-labelledby="story-title">
+        <div class="story-index">01 / The method</div>
+        <div class="story-copy">
+          <p class="kicker">Learning without a map</p>
+          <h2 id="story-title">First, the agent learns a world it can dream inside.</h2>
+          <p class="story-lede">
+            Each 64-by-64 observation becomes a compact latent state. A recurrent state-space
+            model combines that visual evidence with memory and the previous action, then learns
+            to predict what follows.
+          </p>
+          <p class="story-body">
+            During training, Dreamer starts from states sampled from replay and rolls its learned
+            dynamics forward for fifteen steps without receiving new game pixels. Predicted
+            rewards and continuation probabilities train a policy and value function inside those
+            imagined trajectories. During evaluation, the actor acts directly from the current
+            posterior state. It does not run an online planning search before every move.
+          </p>
+          <a
+            class="paper-link"
+            href="https://arxiv.org/abs/2301.04104"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>Primary reference</span>
+            <strong>Hafner et al. &middot; Mastering Diverse Domains through World Models</strong>
+            <i aria-hidden="true">&nearr;</i>
+          </a>
+        </div>
+
+        <div class="stats" aria-label="Experiment results">
+          <div>
+            <strong>98,420</strong>
+            <span>training action steps</span>
+            <small>393,680 emulator frames &middot; action repeat 4</small>
+          </div>
+          <div>
+            <strong>10.49M</strong>
+            <span>learned parameters</span>
+            <small>10,492,103 trainable parameters in the complete agent</small>
+          </div>
+          <div>
+            <strong>15</strong>
+            <span>imagined steps per rollout</span>
+            <small>Latent training horizon for the actor and critic</small>
+          </div>
+        </div>
+
+        <div class="model-ledger" aria-labelledby="model-ledger-title">
+          <header class="ledger-heading">
+            <p class="kicker">Exact parameter accounting</p>
+            <h3 id="model-ledger-title">Inside the 10.49-million-parameter agent.</h3>
+            <p>
+              The model is not one monolithic network. It is a jointly optimized world model,
+              actor, and critic. The world model contains 8,849,347 parameters; the behavior
+              system contributes the remaining 1,642,756.
+            </p>
+          </header>
+
+          <div class="architecture-path" aria-label="DreamerV3 information flow">
+            <span>64 &times; 64 RGB</span>
+            <i aria-hidden="true">&rarr;</i>
+            <span>Encoder</span>
+            <i aria-hidden="true">&rarr;</i>
+            <span>RSSM latent state</span>
+            <i aria-hidden="true">&rarr;</i>
+            <span>Actor + critic</span>
+          </div>
+
+          <div class="system-grid">
+            <section class="system-block world-system" aria-labelledby="world-model-title">
+              <div class="system-title">
+                <div>
+                  <span>World model</span>
+                  <h4 id="world-model-title">Learned environment dynamics</h4>
+                </div>
+                <strong>8,849,347</strong>
+              </div>
+              <p class="system-summary">
+                Learns a compact predictive state from pixels. The RSSM prior advances that
+                state using the previous latent and action; its posterior corrects the prediction
+                with the current encoded frame. Decoder, reward, and continuation heads supervise
+                what the state must retain.
+              </p>
+              <dl class="parameter-list">
+                <div style="--share: 57%">
+                  <dt><strong>RSSM dynamics</strong><span>5,979,392</span></dt>
+                  <dd>
+                    2,048-dimensional recurrent memory plus 32 categorical latent variables,
+                    each selecting one of 16 classes.
+                  </dd>
+                </div>
+                <div style="--share: 12.1%">
+                  <dt><strong>Pixel decoder</strong><span>1,272,003</span></dt>
+                  <dd>Reconstructs 64-by-64 observations from posterior latent features.</dd>
+                </div>
+                <div style="--share: 6.9%">
+                  <dt><strong>Reward head</strong><span>721,407</span></dt>
+                  <dd>Predicts a 255-bin symlog two-hot reward distribution.</dd>
+                </div>
+                <div style="--share: 6.3%">
+                  <dt><strong>Continuation head</strong><span>656,129</span></dt>
+                  <dd>Predicts whether the latent trajectory continues beyond each state.</dd>
+                </div>
+                <div style="--share: 2.1%">
+                  <dt><strong>Pixel encoder</strong><span>220,416</span></dt>
+                  <dd>Compresses each RGB observation into evidence for the RSSM posterior.</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section class="system-block" aria-labelledby="actor-title">
+              <div class="system-title">
+                <div>
+                  <span>Actor</span>
+                  <h4 id="actor-title">Categorical policy</h4>
+                </div>
+                <strong>789,253</strong>
+              </div>
+              <p class="system-summary">
+                Maps latent features to probabilities over five Mario controls. During training,
+                gradients favor actions with high normalized lambda-returns across imagined
+                15-step trajectories while retaining stochastic exploration.
+              </p>
+            </section>
+
+            <section class="system-block" aria-labelledby="critic-title">
+              <div class="system-title">
+                <div>
+                  <span>Critic</span>
+                  <h4 id="critic-title">Distributional value model</h4>
+                </div>
+                <strong>853,503</strong>
+              </div>
+              <p class="system-summary">
+                Estimates the long-term return of each imagined latent state as a 255-bin symlog
+                two-hot distribution. Those values bootstrap lambda-return targets and supply the
+                actor's learning signal without querying the emulator inside imagination.
+              </p>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="investigation" aria-labelledby="investigation-title">
+        <div class="story-index">02 / The engineering record</div>
+        <p class="kicker">Implementation as investigation</p>
+        <h2 id="investigation-title">The failures were part of the result.</h2>
+        <div class="investigation-copy">
+          <p>
+            V1, our custom PyTorch implementation, exposed how small semantic errors can produce
+            plausible losses and unusable behavior: replay windows crossed resets, temporal
+            targets drifted out of alignment, and deterministic argmax evaluation misrepresented
+            a categorical policy.
+          </p>
+          <p>
+            For V2, we built a Mario environment adapter that emits Dreamer's image, reward,
+            is_first, is_last, and is_terminal fields; maps NOOP, right, right+A, right+B, and
+            right+A+B into discrete controls; repeats each action for four emulator frames; and
+            supplies 64-by-64 RGB observations. We also implemented checkpoint resolution,
+            frozen-policy evaluation, episode-level metrics, raw-frame video capture, and a
+            synchronized collector that places decoded open-loop latent predictions beside their
+            real emulator outcomes. The resulting 10,492,103-parameter checkpoint was trained for
+            98,420 action steps and evaluated with no further learning.
+          </p>
+        </div>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-title">
+        <p class="kicker">The next question</p>
+        <h2 id="closing-title">Can one learned world transfer to the next?</h2>
+        <p>
+          The current agent learned one level from one training seed. The research extension is
+          to test whether shared latent dynamics can support fast adaptation across related
+          platforming levels without environment-specific obstacle rules.
+        </p>
+      </section>
+    </main>
+
+    <script src="app.js?v=3"></script>
+  </body>
+</html>
