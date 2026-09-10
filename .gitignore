@@ -1,0 +1,43 @@
+# Python environments and generated metadata
+.venv/
+.venv-official/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Local experiment state and generated artifacts
+outputs/
+work/
+runs/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.avi
+
+# Local server and tool state
+*.log
+.env
+.env.*
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Historical paid-cloud entry points are retained locally but are not published.
+scripts/modal_*.py
+
+# Never distribute game images or ROMs.
+*.nes
+*.rom
+*.sfc
+*.smc
+*.gb
+*.gbc
+*.gba
+*.n64
