@@ -56,30 +56,37 @@ function drawDreamPanel() {
   const square = Math.min(width, height);
   const offsetX = Math.floor((width - square) / 2);
   const offsetY = Math.floor((height - square) / 2);
+  // The bottom 16 original pixels contain the burned-in name. Extend only
+  // clean scenery into the margins; keep the watermark in the main square.
+  const cleanHeight = source.height * 15 / 16;
+  const cleanDestinationHeight = square * 15 / 16;
+  const edgeWidth = source.width / 32;
+  const cleanRowHeight = source.height / 256;
 
   if (width >= height) {
-    dreamContext.drawImage(
-      pairedVideo,
-      source.x,
-      source.y,
-      source.width / 32,
-      source.height,
-      0,
-      offsetY,
-      offsetX,
-      square,
-    );
-    dreamContext.drawImage(
-      pairedVideo,
-      source.x + source.width - source.width / 32,
-      source.y,
-      source.width / 32,
-      source.height,
-      offsetX + square,
-      offsetY,
-      width - offsetX - square,
-      square,
-    );
+    const margins = [
+      { sourceX: source.x, x: 0, width: offsetX },
+      {
+        sourceX: source.x + source.width - edgeWidth,
+        x: offsetX + square,
+        width: width - offsetX - square,
+      },
+    ];
+    for (const margin of margins) {
+      if (margin.width <= 0) continue;
+      dreamContext.drawImage(
+        pairedVideo,
+        margin.sourceX, source.y, edgeWidth, cleanHeight,
+        margin.x, offsetY, margin.width, cleanDestinationHeight,
+      );
+      dreamContext.drawImage(
+        pairedVideo,
+        margin.sourceX, source.y + cleanHeight - cleanRowHeight,
+        edgeWidth, cleanRowHeight,
+        margin.x, offsetY + cleanDestinationHeight,
+        margin.width, square - cleanDestinationHeight,
+      );
+    }
   } else {
     dreamContext.drawImage(
       pairedVideo,
@@ -95,7 +102,7 @@ function drawDreamPanel() {
     dreamContext.drawImage(
       pairedVideo,
       source.x,
-      source.y + source.height - source.height / 32,
+      source.y + cleanHeight - source.height / 32,
       source.width,
       source.width / 32,
       offsetX,
