@@ -198,7 +198,7 @@ h1 {
 .dream-key {
   position: absolute;
   left: 28px;
-  bottom: 28px;
+  bottom: clamp(52px, 4vw, 96px);
   display: grid;
   gap: 5px;
   min-width: 220px;
