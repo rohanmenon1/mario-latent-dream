@@ -15,6 +15,12 @@ const dreamWindowLabel = document.querySelector("#dream-window-label");
 
 pairedVideo.playbackRate = PLAYBACK_RATE;
 pairedVideo.addEventListener("loadeddata", () => {
+  // Clipchamp fits the original 2:1 recording inside its exported canvas.
+  const scale = Math.min(pairedVideo.videoWidth / 512, pairedVideo.videoHeight / 256);
+  const offsetX = (pairedVideo.videoWidth - 512 * scale) / 2;
+  const offsetY = (pairedVideo.videoHeight - 256 * scale) / 2;
+  Object.assign(DREAM_PANEL, { x: offsetX, y: offsetY, width: 256 * scale, height: 256 * scale });
+  Object.assign(REALITY_PANEL, { x: offsetX + 256 * scale, y: offsetY + 8 * scale, width: 256 * scale, height: 240 * scale });
   pairedVideo.playbackRate = PLAYBACK_RATE;
   void pairedVideo.play().catch(() => {});
   renderPairedFrame();
@@ -56,7 +62,7 @@ function drawDreamPanel() {
       pairedVideo,
       source.x,
       source.y,
-      8,
+      source.width / 32,
       source.height,
       0,
       offsetY,
@@ -65,9 +71,9 @@ function drawDreamPanel() {
     );
     dreamContext.drawImage(
       pairedVideo,
-      source.x + source.width - 8,
+      source.x + source.width - source.width / 32,
       source.y,
-      8,
+      source.width / 32,
       source.height,
       offsetX + square,
       offsetY,
@@ -80,7 +86,7 @@ function drawDreamPanel() {
       source.x,
       source.y,
       source.width,
-      8,
+      source.width / 32,
       offsetX,
       0,
       square,
@@ -89,9 +95,9 @@ function drawDreamPanel() {
     dreamContext.drawImage(
       pairedVideo,
       source.x,
-      source.y + source.height - 8,
+      source.y + source.height - source.height / 32,
       source.width,
-      8,
+      source.width / 32,
       offsetX,
       offsetY + square,
       square,
