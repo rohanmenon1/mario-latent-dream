@@ -53,9 +53,11 @@ function drawDreamPanel() {
   dreamContext.fillStyle = "#101510";
   dreamContext.fillRect(0, 0, width, height);
 
-  const square = Math.min(width, height);
+  // Limit each stretched side band to 10% of the background width.
+  const square = Math.max(Math.min(width, height), Math.round(width * 0.8));
   const offsetX = Math.floor((width - square) / 2);
-  const offsetY = Math.floor((height - square) / 2);
+  // Keep the lower edge, including the watermark, visible when zooming in.
+  const offsetY = width >= height ? height - square : Math.floor((height - square) / 2);
   // The bottom 16 original pixels contain the burned-in name. Extend only
   // clean scenery into the margins; keep the watermark in the main square.
   const cleanHeight = source.height * 15 / 16;

@@ -92,15 +92,6 @@ a {
   );
 }
 
-.stage::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  border: 10px solid rgba(8, 10, 8, 0.34);
-}
-
 .topbar {
   position: absolute;
   top: 0;
