@@ -41,3 +41,4 @@ scripts/modal_*.py
 *.gbc
 *.gba
 *.n64
+/website/media/paired_episode_seed151.mp4
